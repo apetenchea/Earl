@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".apk.ApkActivity">
+
+    <TextView
+        android:id="@+id/text_view_apk_md5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/description_text_view_apk_md5"
+        android:textAlignment="center"
+        android:textIsSelectable="true"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/image_view_icon"
+        app:layout_constraintStart_toStartOf="@+id/image_view_icon"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_pkg_name" />
+
+    <TextView
+        android:id="@+id/text_view_risk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:contentDescription="@string/description_text_view_risk"
+        android:textAlignment="center"
+        android:textIsSelectable="true"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="@+id/image_view_icon"
+        app:layout_constraintStart_toStartOf="@+id/image_view_icon"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_apk_md5" />
+
+    <TextView
+        android:id="@+id/text_view_pkg_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:contentDescription="@string/description_text_view_pkg_name"
+        android:textAlignment="center"
+        android:textIsSelectable="true"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/image_view_icon"
+        app:layout_constraintStart_toStartOf="@+id/image_view_icon"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_app_name" />
+
+    <include
+        android:id="@+id/toolbar_layout"
+        layout="@layout/main_toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/image_view_icon"
+        android:layout_width="@android:dimen/app_icon_size"
+        android:layout_height="@android:dimen/app_icon_size"
+        android:layout_marginTop="32dp"
+        android:contentDescription="@string/application_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_layout" />
+
+    <TextView
+        android:id="@+id/text_view_app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:contentDescription="@string/description_text_view_app_name"
+        android:textAlignment="center"
+        android:textIsSelectable="true"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="@+id/image_view_icon"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toStartOf="@+id/image_view_icon"
+        app:layout_constraintTop_toBottomOf="@+id/image_view_icon" />
+
+    <Button
+        android:id="@+id/button_create_ticket"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="@string/open_a_ticket"
+        android:onClick="createTicket"
+        android:text="@string/description_button_create_ticket"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/button_uninstall"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_risk" />
+
+    <Button
+        android:id="@+id/button_uninstall"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:contentDescription="@string/description_button_uninstall"
+        android:onClick="uninstallPackage"
+        android:text="@string/uninstall"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_create_ticket" />
+
+</android.support.constraint.ConstraintLayout>
