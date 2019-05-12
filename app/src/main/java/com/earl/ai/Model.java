@@ -44,9 +44,9 @@ public class Model {
     }
 
 
-    public float predict(float[][] input) {
+    public float[][] predict(float[][] input) {
         float[][] output = new float[input.length][1];
         interpreter.run(input, output);
-        return output[0][0];
+        return output;
     }
 }

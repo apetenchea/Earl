@@ -56,7 +56,7 @@ public class Scanner {
             for (int feature_idx = 0; feature_idx < features.size(); ++feature_idx) {
                 input[0][feature_idx] = features.get(feature_idx);
             }
-            verdicts[index] = Math.round(predictor.predict(input) * 100f);
+            verdicts[index] = Math.round(predictor.predict(input)[0][0] * 100f);
             cache.set(md5, verdicts[index]);
         }
 
