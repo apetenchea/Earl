@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".settings.SettingsActivity"
+            android:name=".SettingsActivity"
             android:parentActivityName=".MainActivity" />
 
         <receiver
@@ -48,7 +48,7 @@
         </receiver>
 
         <activity
-            android:name=".apk.ApkActivity"
+            android:name=".ApkActivity"
             android:parentActivityName=".MainActivity" />
 
         <activity android:name=".db.TicketActivity"

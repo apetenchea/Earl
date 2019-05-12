@@ -1,12 +1,9 @@
-package com.earl.apk;
+package com.earl.scan;
 
-import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
-
-import com.earl.settings.Settings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,48 +19,40 @@ public class Explorer {
     private static final Integer FLAGS = GET_ACTIVITIES | GET_PERMISSIONS | GET_PROVIDERS |
             GET_RECEIVERS | GET_SERVICES;
 
-    private Context context;
     private PackageManager packageManager;
-    private Settings settings;
 
-    public Explorer(Context context) {
-        this.context = context;
-        packageManager = context.getPackageManager();
-        settings = new Settings(context);
+    public Explorer(PackageManager packageManager) {
+        this.packageManager = packageManager;
     }
 
-    public Apk[] getApps() {
+    public Apk[] getInstalledApps() {
         List<PackageInfo> packages = packageManager.getInstalledPackages(FLAGS);
-        if (settings.getShowSystemApps()) {
-            return packageInfoToApkArray(packages);
-        }
 
         final int SYSTEM_FILTER = ApplicationInfo.FLAG_SYSTEM | ApplicationInfo.FLAG_UPDATED_SYSTEM_APP;
         List<PackageInfo> filteredPackages = new ArrayList<>(packages.size());
         for (PackageInfo packageInfo : packages) {
             ApplicationInfo appInfo = packageInfo.applicationInfo;
-            if ((appInfo.flags & SYSTEM_FILTER) == 0) {
+            if ((appInfo.flags & SYSTEM_FILTER) == 0 && !appInfo.packageName.equals("com.earl")) {
                 filteredPackages.add(packageInfo);
             }
         }
 
-        return packageInfoToApkArray(filteredPackages);
+        Apk[] apks = new Apk[filteredPackages.size()];
+        int index = 0;
+        for (PackageInfo packageInfo : filteredPackages) {
+            apks[index] = new Apk(packageManager, packageInfo);
+            ++index;
+        }
+
+        return apks;
     }
 
     public Apk getApk(String packageName) {
         try {
-            return new Apk(context, packageManager.getPackageInfo(packageName, FLAGS));
+            return new Apk(packageManager, packageManager.getPackageInfo(packageName, FLAGS));
         } catch (PackageManager.NameNotFoundException e) {
             Log.e(TAG, e.getMessage());
             return null;
         }
-    }
-
-    private Apk[] packageInfoToApkArray(List<PackageInfo> packageInfos) {
-        Apk[] apks = new Apk[packageInfos.size()];
-        for (int index = 0; index < apks.length; ++index) {
-            apks[index] = new Apk(context, packageInfos.get(index));
-        }
-        return apks;
     }
 }

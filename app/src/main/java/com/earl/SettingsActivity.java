@@ -1,4 +1,4 @@
-package com.earl.settings;
+package com.earl;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +11,7 @@ import android.widget.Switch;
 
 import com.earl.R;
 import com.earl.hook.PackageMonitorService;
+import com.earl.local.Settings;
 
 public class SettingsActivity extends AppCompatActivity {
     private Settings settings;
@@ -31,30 +32,12 @@ public class SettingsActivity extends AppCompatActivity {
 
         settings = new Settings(this);
 
-        Switch showSystemApps = findViewById(R.id.switch_show_system_apps);
-        showSystemApps.setChecked(settings.getShowSystemApps());
-        showSystemApps.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                settings.setShowSystemApps(isChecked);
-            }
-        });
-
         Switch useScanCache = findViewById(R.id.switch_use_scan_cache);
         useScanCache.setChecked(settings.getUseScanCache());
         useScanCache.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 settings.setUseScanCache(isChecked);
-            }
-        });
-
-        Switch useVerdictsDb = findViewById(R.id.switch_use_verdicts_db);
-        useVerdictsDb.setChecked(settings.getUseVerdictsDb());
-        useVerdictsDb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                settings.setUseVerdictsDb(isChecked);
             }
         });
 

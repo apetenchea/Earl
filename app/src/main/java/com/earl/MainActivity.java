@@ -7,6 +7,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,17 +17,16 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
-import com.earl.apk.Apk;
-import com.earl.apk.ApkActivity;
-import com.earl.apk.Explorer;
+import com.earl.scan.Apk;
+import com.earl.scan.Explorer;
 import com.earl.hook.PackageMonitorService;
-import com.earl.scan.Cache;
+import com.earl.local.Cache;
 import com.earl.scan.Scanner;
-import com.earl.scan.Verdict;
-import com.earl.settings.Settings;
-import com.earl.settings.SettingsActivity;
+import com.earl.local.Settings;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getName();
@@ -58,15 +58,15 @@ public class MainActivity extends AppCompatActivity {
         scanResultView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Verdict verdict = (Verdict) parent.getItemAtPosition(position);
-                startApkActivity(verdict);
+                AppStatus appStatus = (AppStatus) parent.getItemAtPosition(position);
+                startApkActivity(appStatus);
                 return true;
             }
         });
 
-        scanner = new Scanner(this);
-        explorer = new Explorer(this);
-        cache = new Cache(this);
+        scanner = new Scanner(getApplicationContext());
+        cache = new Cache(getApplicationContext());
+        explorer = new Explorer(this.getPackageManager());
 
         startPackageMonitor();
     }
@@ -85,14 +85,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                Intent myIntent = new Intent(this, SettingsActivity.class);
-                this.startActivity(myIntent);
-                break;
-            default:
-                Log.e(TAG, String.format("Unknown menu item %d", item.getItemId()));
-                break;
+        if (item.getItemId() == R.id.action_settings) {
+            Intent myIntent = new Intent(this, SettingsActivity.class);
+            this.startActivity(myIntent);
+        } else {
+            Log.e(TAG, String.format("Unknown menu item %d", item.getItemId()));
         }
         return super.onOptionsItemSelected(item);
     }
@@ -108,11 +105,11 @@ public class MainActivity extends AppCompatActivity {
         showApps();
     }
 
-    private void startApkActivity(Verdict verdict) {
+    private void startApkActivity(AppStatus status) {
         Intent intent = new Intent(this, ApkActivity.class);
-        intent.putExtra(getString(R.string.pkg_key), verdict.getApkPkgName());
-        intent.putExtra(getString(R.string.risk_level_key), verdict.getRiskAsPercentage());
-        intent.putExtra(getString(R.string.verdict_color_key), verdict.getColor());
+        intent.putExtra(getString(R.string.pkg_key), status.getPackageName());
+        intent.putExtra(getString(R.string.risk_level_key), status.getRisk());
+        intent.putExtra(getString(R.string.verdict_color_key), status.getColor());
         startActivity(intent);
     }
 
@@ -124,21 +121,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showApps() {
-        new BackgroundScanner(scanner).execute(explorer.getApps());
+        new BackgroundScanner(scanner).execute(explorer.getInstalledApps());
     }
 
-    private void showScanResult(Verdict[] result) {
-        Arrays.sort(result);
-        ListAdapter adapter = new FullScanAdapter(this, result);
+    private void showScanResult(List<Pair<Integer, Apk>> pairs) {
+        pairs.sort(new Comparator<Pair<Integer, Apk>>() {
+            @Override
+            public int compare(Pair<Integer, Apk> o1, Pair<Integer, Apk> o2) {
+                return o2.first - o1.first;
+            }
+        });
+
+        int index = 0;
+        AppStatus[] status = new AppStatus[pairs.size()];
+        for (Pair<Integer, Apk> pair : pairs) {
+            Apk apk = pair.second;
+            status[index] = new AppStatus(pair.first, apk.getLabel(), apk.getPackageName(),
+                    apk.getMd5(), apk.getIcon());
+            ++index;
+        }
+        ListAdapter adapter = new FullScanAdapter(this, status);
         scanResultView.setAdapter(adapter);
     }
 
-    private class BackgroundScanner extends AsyncTask<Apk, Void, Verdict[]> {
+    private class BackgroundScanner extends AsyncTask<Apk, Void, Integer[]> {
 
         private Scanner scanner;
+        private List<Pair<Integer, Apk>> pairs;
 
         BackgroundScanner(Scanner scanner) {
             this.scanner = scanner;
+            this.pairs = new ArrayList<>();
         }
 
         @Override
@@ -150,16 +163,25 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected Verdict[] doInBackground(Apk... apps) {
+        protected Integer[] doInBackground(Apk... apps) {
+            for (Apk apk : apps) {
+                pairs.add(Pair.create(50, apk));
+            }
             return scanner.scan(apps);
         }
 
         @Override
-        protected void onPostExecute(Verdict[] result) {
+        protected void onPostExecute(Integer[] result) {
             progressBar.setVisibility(View.GONE);
             scanResultView.setVisibility(View.VISIBLE);
             refreshBtn.setVisibility(View.VISIBLE);
-            showScanResult(result);
+
+            for (int index = 0; index < result.length; ++index) {
+                Pair<Integer, Apk> pair = pairs.get(index);
+                pairs.set(index, Pair.create(result[index], pair.second));
+            }
+            showScanResult(pairs);
+
             super.onPostExecute(result);
         }
     }

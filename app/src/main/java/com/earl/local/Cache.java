@@ -1,27 +1,22 @@
-package com.earl.scan;
+package com.earl.local;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-
-import com.earl.R;
 
 public class Cache {
     private SharedPreferences cache;
 
     public Cache(Context context) {
-        this.cache = context.getSharedPreferences(context.getString(R.string.scan_cache_file), Context.MODE_PRIVATE);
+        this.cache = context.getSharedPreferences("scan_cache", Context.MODE_PRIVATE);
     }
 
-    float get(String key) {
-        if (key == null) {
-            return Float.NaN;
-        }
-        return cache.getFloat(key, Float.NaN);
+    public int get(String key) {
+        return cache.getInt(key, -1);
     }
 
-    void set(String key, float value) {
+    public void set(String key, int value) {
         SharedPreferences.Editor editor = cache.edit();
-        editor.putFloat(key, value);
+        editor.putInt(key, value);
         editor.apply();
     }
 

@@ -7,10 +7,9 @@ import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.earl.apk.Apk;
-import com.earl.apk.Explorer;
+import com.earl.scan.Apk;
+import com.earl.scan.Explorer;
 import com.earl.scan.Scanner;
-import com.earl.scan.Verdict;
 
 import java.util.Locale;
 
@@ -34,19 +33,23 @@ public class OnInstallReceiver extends BroadcastReceiver {
                 Log.e(TAG, "Cannot extract package name!");
                 return;
             }
+            
+            if (packageName.equals("com.earl")) {
+                return;
+            }
 
-            Explorer explorer = new Explorer(context);
+            Explorer explorer = new Explorer(context.getPackageManager());
             Apk apk = explorer.getApk(packageName);
             if (apk == null) {
                 Log.e(TAG, String.format("Cannot retrieve information about %s!", packageName));
                 return;
             }
 
-            Scanner scanner = new Scanner(context);
-            Verdict v = scanner.scan(apk);
+            Scanner scanner = new Scanner(context.getApplicationContext());
+            Integer risk = scanner.scan(apk)[0];
 
             String message = String.format(Locale.US,
-                    "%s carries a risk of %d%%", v.getApkName(), v.getRiskAsPercentage());
+                    "%s carries a risk of %d%%", apk.getLabel(), risk);
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         } else {
             Log.e(TAG, String.format("Unhandled action %s!", intent.getAction()));

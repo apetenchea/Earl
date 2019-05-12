@@ -1,12 +1,10 @@
 package com.earl.ai;
 
-import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.util.Log;
 
-import com.earl.R;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -21,12 +19,11 @@ public class FeaturesExtractor {
 
     private FeaturesExtractor() {}
 
-    public static FeaturesExtractor getInstance(Context context) {
+    public static FeaturesExtractor getInstance(AssetManager assetManager) {
         if (instance == null) {
             try {
                 Gson gson = new Gson();
-                AssetManager assetManager = context.getAssets();
-                AssetFileDescriptor featuresConfig = assetManager.openFd(context.getString(R.string.FEATURES_CONFIG));
+                AssetFileDescriptor featuresConfig = assetManager.openFd("features.json");
                 InputStreamReader reader = new InputStreamReader(featuresConfig.createInputStream());
                 instance = gson.fromJson(reader, FeaturesExtractor.class);
             } catch (IOException e) {
@@ -42,9 +39,5 @@ public class FeaturesExtractor {
             features.add(feature.getValue(packageInfo));
         }
         return features;
-    }
-
-    public Integer getFeaturesCount() {
-        return config.size();
     }
 }

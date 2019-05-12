@@ -1,12 +1,8 @@
 package com.earl.ai;
 
-import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.util.Log;
-
-import com.earl.MainActivity;
-import com.earl.R;
 
 import org.tensorflow.lite.Interpreter;
 
@@ -14,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.List;
 
 public class Model {
     private static final String TAG = Model.class.getName();
@@ -25,11 +22,10 @@ public class Model {
         this.interpreter = interpreter;
     }
 
-    public static Model getInstance(Context context) {
+    public static Model getInstance(AssetManager assetManager) {
         if (instance == null) {
             try {
-                AssetManager assetManager = context.getAssets();
-                AssetFileDescriptor modelFile = assetManager.openFd(context.getString(R.string.MODEL_FILE));
+                AssetFileDescriptor modelFile = assetManager.openFd("model.lite");
                 Interpreter interpreter = new Interpreter(loadModel(modelFile));
                 instance = new Model(interpreter);
             } catch (IOException e) {
@@ -48,16 +44,9 @@ public class Model {
     }
 
 
-    public float[][] predict(float[][] input) {
-        Log.d(TAG, "PREDICTION");
+    public float predict(float[][] input) {
         float[][] output = new float[input.length][1];
         interpreter.run(input, output);
-        return output;
-    }
-
-    public void close() {
-        interpreter.close();
-        interpreter = null;
-        instance = null;
+        return output[0][0];
     }
 }

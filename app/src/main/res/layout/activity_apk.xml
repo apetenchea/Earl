@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".apk.ApkActivity">
+    tools:context=".ApkActivity">
 
     <TextView
         android:id="@+id/text_view_apk_md5"
@@ -80,36 +80,20 @@
         app:layout_constraintTop_toBottomOf="@+id/image_view_icon" />
 
     <Button
-        android:id="@+id/button_create_ticket"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="8dp"
-        android:contentDescription="@string/open_a_ticket"
-        android:onClick="createTicket"
-        android:text="@string/description_button_create_ticket"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/button_uninstall"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_risk" />
-
-    <Button
         android:id="@+id/button_uninstall"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
+        android:layout_marginBottom="8dp"
         android:contentDescription="@string/description_button_uninstall"
         android:onClick="uninstallPackage"
         android:text="@string/uninstall"
         android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_create_ticket" />
+        app:layout_constraintTop_toBottomOf="@+id/text_view_risk" />
 
 </android.support.constraint.ConstraintLayout>

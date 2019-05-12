@@ -1,6 +1,5 @@
-package com.earl.apk;
+package com.earl;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.ActionBar;
@@ -11,17 +10,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.earl.R;
-import com.earl.db.TicketActivity;
+import com.earl.scan.Apk;
+import com.earl.scan.Explorer;
 
 public class ApkActivity extends AppCompatActivity {
     private static final String TAG = ApkActivity.class.getName();
-    private static final int REQUEST_CODE_TICKET = 1;
 
     private String packageName;
-    private String md5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +49,7 @@ public class ApkActivity extends AppCompatActivity {
 
         int verdictColor = intent.getIntExtra(getString(R.string.verdict_color_key), 0);
 
-        Explorer explorer = new Explorer(this);
+        Explorer explorer = new Explorer(getPackageManager());
         Apk apk = explorer.getApk(packageName);
         if (apk == null) {
             Log.e(TAG, String.format("Cannot find %s", packageName));
@@ -71,10 +67,8 @@ public class ApkActivity extends AppCompatActivity {
         pkgNameView.setText(apk.getPackageName());
         pkgNameView.setTextColor(verdictColor);
 
-        String md5 = apk.getMd5();
-        this.md5 = md5;
         TextView md5View = findViewById(R.id.text_view_apk_md5);
-        md5View.setText(md5);
+        md5View.setText(apk.getMd5());
         md5View.setTextColor(verdictColor);
 
         TextView riskView = findViewById(R.id.text_view_risk);
@@ -86,27 +80,6 @@ public class ApkActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE_TICKET) {
-            if (resultCode == TicketActivity.RESULT_CODE_BACK) {
-                return;
-            }
-            String msg = "Cannot create ticket!";
-            if (resultCode == Activity.RESULT_OK){
-                msg = "Ticket created! Thanks!";
-            }
-            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void createTicket(View view) {
-        Intent intent = new Intent(this, TicketActivity.class);
-        intent.putExtra(getString(R.string.pkg_key), packageName);
-        intent.putExtra(getString(R.string.md5_key), md5);
-        startActivityForResult(intent, REQUEST_CODE_TICKET);
     }
 
     public void uninstallPackage(View view) {

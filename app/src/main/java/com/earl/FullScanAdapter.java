@@ -1,7 +1,6 @@
 package com.earl;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,13 +9,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.earl.scan.RiskLevel;
-import com.earl.scan.Verdict;
-
-class FullScanAdapter extends ArrayAdapter<Verdict> {
+class FullScanAdapter extends ArrayAdapter<AppStatus> {
     private static final String TAG = FullScanAdapter.class.getName();
 
-    FullScanAdapter(Context context, Verdict[] results) {
+    FullScanAdapter(Context context, AppStatus[] results) {
         super(context, R.layout.row_full_scan, results);
     }
 
@@ -37,14 +33,14 @@ class FullScanAdapter extends ArrayAdapter<Verdict> {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        Verdict result = getItem(position);
+        AppStatus result = getItem(position);
         if (result == null) {
             return convertView;
         }
 
-        holder.icon.setImageDrawable(result.getApkIcon());
-        holder.name.setText(result.getApkName());
-        holder.risk.setText(String.valueOf(result.getRiskAsPercentage()));
+        holder.icon.setImageDrawable(result.getIcon());
+        holder.name.setText(result.getLabel());
+        holder.risk.setText(String.valueOf(result.getRisk()));
         int color = result.getColor();
         holder.risk.setTextColor(color);
         holder.name.setTextColor(color);
