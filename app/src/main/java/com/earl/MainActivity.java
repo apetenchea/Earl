@@ -136,8 +136,7 @@ public class MainActivity extends AppCompatActivity {
         AppStatus[] status = new AppStatus[pairs.size()];
         for (Pair<Integer, Apk> pair : pairs) {
             Apk apk = pair.second;
-            status[index] = new AppStatus(pair.first, apk.getLabel(), apk.getPackageName(),
-                    apk.getMd5(), apk.getIcon());
+            status[index] = new AppStatus(pair.first, apk.getLabel(), apk.getPackageName(), apk.getIcon());
             ++index;
         }
         ListAdapter adapter = new FullScanAdapter(this, status);

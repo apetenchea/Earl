@@ -7,14 +7,12 @@ public class AppStatus {
     private int risk;
     private String label;
     private String packageName;
-    private String md5;
     private Drawable icon;
 
-    AppStatus(int risk, String label, String packageName, String md5, Drawable icon) {
+    AppStatus(int risk, String label, String packageName, Drawable icon) {
         this.risk = risk;
         this.label = label;
         this.packageName = packageName;
-        this.md5 = md5;
         this.icon = icon;
     }
 
@@ -32,10 +30,6 @@ public class AppStatus {
 
     public String getLabel() {
         return label;
-    }
-
-    public String getMd5() {
-        return md5;
     }
 
     public int getColor() {
